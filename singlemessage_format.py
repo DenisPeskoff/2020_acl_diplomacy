@@ -22,7 +22,7 @@ def write_single_messages(messages, outfile):
             outh.write(json.dumps(msg)+'\n')
 
 if __name__ == '__main__':
-    ROOT = '../data/'
+    ROOT = 'data/'
     
     write_single_messages(to_single_message_format(join(ROOT, 'validation.jsonl')), 
                                                         join(ROOT, 'validation_sm.jsonl'))
