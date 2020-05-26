@@ -29,9 +29,9 @@
         "dropout": 0.5,
         "embedder": {
             "tokens": {
-                "embedding_dim": 300,
-                "pretrained_file": "(http://nlp.stanford.edu/data/glove.840B.300d.zip)#glove.840B.300d.txt",
-                "trainable": true,
+                "embedding_dim": 200,
+                "pretrained_file": "(http://nlp.stanford.edu/data/glove.twitter.27B.zip)#glove.twitter.27B.200d.txt",
+                "trainable": false,
                 "type": "embedding"
             }
         },
@@ -39,7 +39,7 @@
             "encoder": {
             "bidirectional": true,
             "hidden_size": 100,
-            "input_size": 300,
+            "input_size": 200,
             "type": "lstm"
             },
             "type": 'pooled_rnn',

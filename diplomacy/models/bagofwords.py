@@ -177,7 +177,7 @@ if __name__ == '__main__':
         print("Specify s for sender or r for receiver e.g.:  python bagofwords.py s")
         exit()
     #import data.  Specify directory path
-    data_path = '../../data/'#'diplomacy_model/data/sep11/by_game/'
+    data_path = 'data/'
 
     with jsonlines.open(data_path+'train.jsonl', 'r') as reader:
         train = list(reader)
