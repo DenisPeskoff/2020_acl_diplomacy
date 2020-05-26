@@ -55,14 +55,8 @@ with jsonlines.open(test_set, 'r') as reader:
 
 print('Human baseline, macro:', f1_score(sender_labels, receiver_labels, pos_label=1, average= 'macro'))
 print('Human baseline, lie F1:', f1_score(sender_labels, receiver_labels, pos_label=1, average= 'binary'))
+print('Overall Accuracy is, ', accuracy_score(sender_labels, receiver_labels))
 
 
 
-#type = [ 'macro', 'binary'] #'weighted', 'micro',
-#    #for metric in type:
-#    print("The human baseline is:")
-#    print(metric)
-#    print('Sender Human F1', f1_score(sender_labels, receiver_labels, pos_label=1, average= metric))
 
-#print('Overall accurcay is, ', accuracy_score(sender_labels, receiver_labels))
-#print (total_tt, total_tn, total_nt, total_nn)
