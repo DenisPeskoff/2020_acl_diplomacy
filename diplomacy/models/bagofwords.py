@@ -69,7 +69,7 @@ def convert_to_binary(dataset):
                 binary.append(1)
             else:
                 binary.append(0)
-#binary.append(message['score_delta'])
+
         if TASK == "SENDER":
             annotation ='sender_annotation'
         elif TASK == "RECEIVER":
@@ -100,7 +100,7 @@ def log_reg(train, test):
     if TASK == "SENDER":
         corpus = [message['message'].lower() for message in aggregate(train)]
     elif TASK == "RECEIVER": #for receivers, drop all missing annotations
-        corpus = [message['message'].lower() for message in aggregate(train) if message['receiver_annotation'] != None]
+        corpus = [message['message'].lower() for message in aggregate(train) if message['receiver_annotation'] != "NOANNOTATION"]
     X = vectorizer.fit_transform(corpus)
 
     #Convert test data into a vector, only based on train vocab
@@ -108,7 +108,7 @@ def log_reg(train, test):
     if TASK == "SENDER":
         y = newVec.fit_transform([message['message'].lower() for message in aggregate(test)])
     elif TASK == "RECEIVER": #for receivers, drop all missing annotations
-        y = newVec.fit_transform([message['message'].lower() for message in aggregate(test) if message['receiver_annotation'] != None])
+        y = newVec.fit_transform([message['message'].lower() for message in aggregate(test) if message['receiver_annotation'] != "NOANNOTATION"])
 
     #only used for getting lie/not lie labels
     train = convert_to_binary(aggregate(train))
