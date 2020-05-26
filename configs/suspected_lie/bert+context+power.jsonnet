@@ -1,4 +1,7 @@
 {
+    "pytorch_seed": 1994,
+    "numpy_seed": 1994,
+    "random_seed": 1994,
     "dataset_reader": {
         "type": "diplomacy_reader",
         "label_key": "receiver_labels",

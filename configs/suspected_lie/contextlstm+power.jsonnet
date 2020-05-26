@@ -1,4 +1,7 @@
 {
+    "pytorch_seed": 1994,
+    "numpy_seed": 1994,
+    "random_seed": 1994,
     "dataset_reader": {
         "type": "diplomacy_reader",
         "label_key": "receiver_labels",
@@ -23,7 +26,7 @@
             "hidden_size": 200,
             "input_size": 200
         },
-        "dropout": "0.5",
+        "dropout": "0.4",
         "embedder": {
             "tokens": {
                 "type": "embedding",
