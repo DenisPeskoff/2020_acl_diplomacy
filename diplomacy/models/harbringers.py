@@ -1,11 +1,11 @@
 #BoW Version
 import jsonlines
+import json
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
-from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_selection import RFE
 import numpy as np
-from scipy.sparse import csr_matrix
+from sklearn.preprocessing import StandardScaler
 import spacy
 from spacy.lang.en import English
 from spacy.lang.en.stop_words import STOP_WORDS
@@ -13,16 +13,8 @@ import sys
 import warnings
 warnings.filterwarnings("ignore")
 
-def is_number(tok):
-    try:
-        float(tok)
-        return True
-    except ValueError:
-        return False
-
 def spacy_tokenizer(text):
-    return [tok.text if not is_number(tok.text) else '_NUM_' for tok in nlp(text)]
-
+    return [tok.text for tok in nlp(text)]
 
 
 #change the format from list of lists into a single list
@@ -46,6 +38,12 @@ def aggregate(dataset):
 def convert_to_binary(dataset):
     binary_data = []
     matrix = []
+  
+    with open('utils/2015_Diplomacy_lexicon.json') as f:
+        feature_dict = json.loads(f.readline())
+    feature_dict['but'] = ['but']
+    feature_dict['countries'] = ['austria', 'england', 'france', 'germany', 'italy', 'russia', 'turkey']
+    
     for message in dataset:
         #drop the instances that were not annotated
         if message['receiver_annotation'] == True or message['receiver_annotation'] == False:
@@ -57,6 +55,23 @@ def convert_to_binary(dataset):
                 continue
             
         binary = []
+        #add features
+        
+        #loop through each message.  If word in message matches the dictionary, add binary feature
+        for feature in feature_dict.keys():
+            feature_flag = False
+            preprocessed_message = spacy_tokenizer(message['message'].lower())
+            total = 0
+            for word in feature_dict[feature]:
+                if(word in preprocessed_message):
+                    total+=1
+                    feature_flag = True
+            #break
+            if feature_flag:
+                binary.append(total)
+            else:
+                binary.append(0)
+        
         
         #a severe power skew (a difference of 5 or more supply centers) has the best result
         if POWER == "y":
@@ -69,7 +84,8 @@ def convert_to_binary(dataset):
                 binary.append(1)
             else:
                 binary.append(0)
-#binary.append(message['score_delta'])
+    
+    
         if TASK == "SENDER":
             annotation ='sender_annotation'
         elif TASK == "RECEIVER":
@@ -95,20 +111,11 @@ def split_xy(data):
 
 
 def log_reg(train, test):
-    #Convert train data into a vector
-    vectorizer = CountVectorizer(tokenizer=spacy_tokenizer, stop_words=STOP_WORDS, strip_accents = 'unicode')
     if TASK == "SENDER":
         corpus = [message['message'].lower() for message in aggregate(train)]
     elif TASK == "RECEIVER": #for receivers, drop all missing annotations
-        corpus = [message['message'].lower() for message in aggregate(train) if message['receiver_annotation'] != None]
-    X = vectorizer.fit_transform(corpus)
+        corpus = [message['message'].lower() for message in aggregate(train) if message['receiver_annotation'] != "NOANNOTATION"]
 
-    #Convert test data into a vector, only based on train vocab
-    newVec = CountVectorizer(tokenizer=spacy_tokenizer, vocabulary=vectorizer.vocabulary_, stop_words=STOP_WORDS, strip_accents = 'unicode')
-    if TASK == "SENDER":
-        y = newVec.fit_transform([message['message'].lower() for message in aggregate(test)])
-    elif TASK == "RECEIVER": #for receivers, drop all missing annotations
-        y = newVec.fit_transform([message['message'].lower() for message in aggregate(test) if message['receiver_annotation'] != None])
 
     #only used for getting lie/not lie labels
     train = convert_to_binary(aggregate(train))
@@ -117,40 +124,26 @@ def log_reg(train, test):
     train = split_xy(train)
     test = split_xy(test)
 
-    #append power to the matrix
-    append_power_x = np.append(X.toarray(), train[0], axis = 1)
-    append_power_y = np.append(y.toarray(), test[0], axis = 1)
-
-    #code to scale features, if power is added as a raw value, not binary feature.  Worse than binary so not sued
-    #    from sklearn.preprocessing import StandardScaler
-    #    scaler = StandardScaler()
-    #    append_power_x = scaler.fit_transform(append_power_x)
-    #    append_power_y = scaler.fit_transform(append_power_y)
-
-    #convert matrix back to sparse format
-    X = csr_matrix(append_power_x)
-    y = csr_matrix(append_power_y)
+    #code to scale features, if power is added as a raw value, not binary feature.  Doesn't help but best practice
+    scaler = StandardScaler()
+    train_scaled = scaler.fit_transform(train[0])
+    test_scaled = scaler.fit_transform(test[0])
 
     #balanced class weight is important, since otherwise it will only learn majority class
     logmodel = LogisticRegression(class_weight = 'balanced', max_iter=1000)
 
 
-#    RFE VERSION.  Worse than log regression and long run time so not used
+    #RFE VERSION.  Doesn't improve results
 #    rfe = RFE(logmodel, n_features_to_select = 1000, step = 100, verbose = 1)
-#    rfe = rfe.fit(X, train[1])
+#    rfe = rfe.fit(train_scaled, train[1])
 #    print(rfe.support_)
 #    print(rfe.ranking_)
-#    predictions = rfe.predict(y)
-#    print(rfe.score(y, test[1]))
+#    predictions = rfe.predict(test_scaled)
+#    print(rfe.score(test_scaled, test[1]))
 #    print(classification_report(test[1],predictions))
 
-    logmodel.fit(X, train[1])
-    predictions = logmodel.predict(y)
-    #code to print out top words
-    #    print ("Examples of words that skew towards a lie are:")
-    #    for index,a in enumerate(logmodel.coef_[0]):
-    #        if a > 1.75:
-    #            print(vectorizer.get_feature_names()[index], a)
+    logmodel.fit(train_scaled, train[1])
+    predictions = logmodel.predict(test_scaled)
 
     print(classification_report(test[1],predictions, digits=3))
 
@@ -174,10 +167,11 @@ if __name__ == '__main__':
                 print("Specify y for including power and n for not including it e.g.: python bagofwords.py s n")
                 exit()
     else:
-        print("Specify s for sender or r for receiver e.g.:  python bagofwords.py s")
+        print("Specify s for sender or r for receiver e.g.:  python harbringers.py s")
         exit()
-    #import data.  Specify directory path
-    data_path = '../../data/'#'diplomacy_model/data/sep11/by_game/'
+
+
+    data_path = 'data/'
 
     with jsonlines.open(data_path+'train.jsonl', 'r') as reader:
         train = list(reader)
