@@ -7,7 +7,7 @@ The neural models in this repository are implemented using allennlp v0.9.0. To r
 allennlp train -f --include-package diplomacy -s logdir configs/actual_lie/bert+context.jsonnet
 ```
 
-To run the lstm model (`lstm.jsonnet`), please make sure to run `python singlemessage_format.py` first.
+To run the lstm model (`lstm.jsonnet`), please make sure to run `python utils/singlemessage_format.py` first.
 
 ## Citation
 ```
