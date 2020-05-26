@@ -1,4 +1,7 @@
 {
+    "pytorch_seed": 1994,
+    "numpy_seed": 1994,
+    "random_seed": 1994,
     "dataset_reader": {
         "lazy": false,
         "sender_annotation": true,
@@ -50,7 +53,7 @@
     "train_data_path": 'data/train_sm.jsonl',
     "validation_data_path": 'data/validation_sm.jsonl',
     "trainer": {
-        "cuda_device": -1,
+        "cuda_device": 0,
         "grad_clipping": 1.0,
         "num_epochs": 15,
         "patience": 5,
