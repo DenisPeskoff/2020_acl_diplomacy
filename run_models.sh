@@ -4,17 +4,42 @@ LOG_ROOT='logs'
 
 python utils/singlemessage_format.py
 
+echo "\n Running all models: baselines, followed to logistic regression, followed by neural. \n Comment out uneeded commands in the script if needed.  \n A GPU is recommended for the neural models. \n \n"
+
+echo "Human Baseline:"
 #Human baseline
 python models/models/human_baseline.py
 
+echo "\nRandom and Majority Class Baselines"
 #Random and Majority
 python models/models/random_and_majority_baselines.py
 
-#Bag of words
-python models/models/bagofwords.py r n #suspected_lie, do not use power
+#Harbringers
+echo "\nHarbringers: Actual Lie"
+echo "Without Power"
+python models/models/harbringers.py s n #actual_lie, no power
+echo "With Power"
+python models/models/harbringers.py s y #actual_lie, yes power
 
-#Harbringers 
-python models/models/harbringers.py s y #actual_lie, use power
+echo "\nHarbringers: Suspected Lie"
+echo "Without Power"
+python models/models/harbringers.py r n #suspected_lie, no power
+echo "With Power"
+python models/models/harbringers.py r y #suspected_lie, no power
+
+echo "Bag of Words Log Reg: Actual Lie"
+#Bag of words
+echo "Without Power"
+python models/models/bagofwords.py s n #suspected_lie, no power
+echo "With Power"
+python models/models/bagofwords.py s y #suspected_lie, use power
+
+echo "\nBag of Words Log Reg: Suspected Lie:"
+echo "Without Power"
+python models/models/bagofwords.py r n #suspected_lie, no power
+echo "With Power"
+python models/models/bagofwords.py r y #suspected_lie, use power
+
 
 #Neural models for actual lie
 for name in "lstm" "contextlstm" "contextlstm+power" "bert+context" "bert+context+power"
