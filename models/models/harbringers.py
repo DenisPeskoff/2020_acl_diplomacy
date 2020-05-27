@@ -132,7 +132,6 @@ def log_reg(train, test):
     #balanced class weight is important, since otherwise it will only learn majority class
     logmodel = LogisticRegression(class_weight = 'balanced', max_iter=1000)
 
-
     #RFE VERSION.  Doesn't improve results
 #    rfe = RFE(logmodel, n_features_to_select = 1000, step = 100, verbose = 1)
 #    rfe = rfe.fit(train_scaled, train[1])
@@ -144,7 +143,6 @@ def log_reg(train, test):
 
     logmodel.fit(train_scaled, train[1])
     predictions = logmodel.predict(test_scaled)
-
     print(classification_report(test[1],predictions, digits=3))
 
 

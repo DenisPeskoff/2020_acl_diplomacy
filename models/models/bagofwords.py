@@ -147,10 +147,14 @@ def log_reg(train, test):
     logmodel.fit(X, train[1])
     predictions = logmodel.predict(y)
     #code to print out top words
-    #    print ("Examples of words that skew towards a lie are:")
-    #    for index,a in enumerate(logmodel.coef_[0]):
-    #        if a > 1.75:
-    #            print(vectorizer.get_feature_names()[index], a)
+#    print ("Examples of words that skew towards a lie are:")
+#    for index,a in enumerate(logmodel.coef_[0]):
+#        if a > 2:
+#            print(vectorizer.get_feature_names()[index], a)
+#
+#    for index,a in enumerate(logmodel.coef_[0]):
+#        if a < -2:
+#            print(vectorizer.get_feature_names()[index], a)
 
     print(classification_report(test[1],predictions, digits=3))
 
