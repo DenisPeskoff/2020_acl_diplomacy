@@ -1,7 +1,15 @@
 # 2020_acl_diplomacy
 Repository for ACL 2020 Paper: "It Takes Two to Lie: One to Lie, and One to Listen"
 
-The neural models in this repository are implemented using allennlp v0.9.0. To run a model just change `logdir` and the config file in the command below. All our config files are under `configs/`. 
+## Setup
+
+```
+conda create --name diplomacy python=3.7
+conda activate diplomacy
+pip install -e .
+```
+
+The neural models in this repository are implemented using allennlp. To run a model just change `logdir` and the config file in the command below. All our config files are under `configs/`. 
 
 ```
 allennlp train -f --include-package diplomacy -s logdir configs/actual_lie/bert+context.jsonnet
