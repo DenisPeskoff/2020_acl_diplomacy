@@ -45,7 +45,7 @@ python diplomacy/models/bagofwords.py r y #suspected_lie, use power
 for name in "lstm" "contextlstm" "contextlstm+power" "bert+context" "bert+context+power"
 do
     logdir="${LOG_ROOT}/actual_lie/${name}"
-    config="models/configs/actual_lie/${name}.jsonnet"
+    config="configs/actual_lie/${name}.jsonnet"
     allennlp train -f --include-package diplomacy -s $logdir $config
 done
 
@@ -53,6 +53,6 @@ done
 for name in "lstm" "contextlstm" "contextlstm+power" "bert+context" "bert+context+power"
 do
     logdir="${LOG_ROOT}/suspected_lie/${name}"
-    config="models/configs/suspected_lie/${name}.jsonnet"
+    config="configs/suspected_lie/${name}.jsonnet"
     allennlp train -f --include-package diplomacy -s $logdir $config
 done
