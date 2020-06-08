@@ -1,5 +1,5 @@
 Each file is a jsonlines file containing an entire game dialog per line. Each object has the following fields: 
-
+An alternate representation of the data, by message not by conversation, is available as part of ConvoKit: https://convokit.cornell.edu/documentation/diplomacy.html
 
 **speakers:** the sender of the message (string format.  russia, turkey, england...)
 
