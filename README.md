@@ -16,6 +16,8 @@ allennlp train -f --include-package diplomacy -s logdir configs/actual_lie/bert+
 ```
 
 To run the lstm model (`lstm.jsonnet`), please make sure to run `python utils/singlemessage_format.py` first.
+UPDATE: We include full game (without messages) data for the 12 games that is not used in our paper under utils/ExtraGameData.zip
+
 
 ## Citation
 ```
