@@ -29,4 +29,7 @@ UPDATE: We include full game (without messages) data for the 12 games that is no
 	Year = {2020},
 	Location = {The Cyberverse Simulacrum of Seattle},
 }
+
+## License 
 ```
+This work is licensed under a Creative Commons Attribution 4.0 International License.
