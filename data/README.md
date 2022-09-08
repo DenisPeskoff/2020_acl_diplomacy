@@ -24,3 +24,5 @@ An alternate representation of the data, by message not by conversation, is avai
 **years:** the year in Diplomacy, associated with the season (string format.  1901 through 1918)
 
 **game_id:** which of the 12 games the dialog comes from (int format ranging from 1 to 12)
+
+*UPDATE* We additionally have all game data (moves) available at https://github.com/DenisPeskov/2020_acl_diplomacy/blob/master/utils/ExtraGameData.zip
